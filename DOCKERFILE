@@ -1,5 +1,5 @@
-RG ACR_NAME
-FROM ${ACR_NAME}.azurecr.io/zulu-openjdk:11
+ARG ACR_NAME
+FROM azul/zulu-openjdk:11
 ARG DATADOG_VERSION
 VOLUME /tmp
 RUN apt-get update -y --no-install-recommends \
@@ -8,7 +8,6 @@ RUN apt-get update -y --no-install-recommends \
 RUN mkdir -p /datadog/agent
 ENV DATADOG_VERSION $DATADOG_VERSION
 RUN curl -L https://github.com/DataDog/dd-trace-java/releases/download/v${DATADOG_VERSION}/dd-java-agent-${DATADOG_VERSION}.jar -o /datadog/agent/javaagent.jar
-COPY *-app/target/*.jar app.jar
 RUN groupadd -g 1000 app \
 && useradd -r -u 1000 -g app app \
 && mkdir -p /logs \
@@ -16,5 +15,4 @@ RUN groupadd -g 1000 app \
 && chown -R app:app /tmp \
 && mkdir -p /datadog \
 && chown -R app:app /datadog \
-&& chown -R app:app app.jar \
 && setcap CAP_NET_BIND_SERVICE=+eip $(readlink -f $(which java))

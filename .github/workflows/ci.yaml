@@ -12,6 +12,7 @@ jobs:
     - run: echo ${DOCKERHUB_TOKEN} | docker login --username cforce --password-stdin
       env:
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
     - run: docker build . --file Dockerfile --tag cforce/zulu-openjdk:latest
+      env:
+        DATADOG_VERSION: "0.96"
     - run: docker push cforce/zulu-openjdk:latest
